@@ -7,8 +7,12 @@ const Main = () => {
   return (
     <div>
       <button onClick={() => navigate("/rockScissorsPaper")}>
-        가위바위보 게임
+        Function 가위바위보 게임
       </button>
+      <button onClick={() => navigate("/classRockScissorsPaper")}>
+        AppClass 가위바위보 게임
+      </button>
+      <button onClick={() => navigate("/appclass")}>AppClass 연습</button>
     </div>
   );
 };

@@ -1,13 +1,6 @@
-import { useState } from "react";
-import Box from "../../component/box/Box";
+import React, { Component } from "react";
+import BoxClass from "../../component/box/BoxClass";
 import "./RockScissorsPaper.css";
-
-// 1. 박스 2개(타이틀, 사진, 결과)
-// 2. 가위 바위 보 버튼이 있다.
-// 3. 버튼을 클릭하면 클릭한 값이 박스에 보임.
-// 4. 컴퓨터는 랜덤하게 아이템 선택이 된다.
-// 5. 3,4의 결과를 가지고 누가 이겼는지 승패를 따진다.
-// 6. 승패결과에 따라 테두리 색이 바뀐다. (이기면 초록, 지면 빨강, 비기면 검정)
 
 const choice = {
   rock: {
@@ -24,30 +17,40 @@ const choice = {
   },
 };
 
-function RockScissorsPaper() {
-  const [userSelect, setUserSelect] = useState(null);
-  const [computerSelect, setComputerSelect] = useState(null);
-  const [result, setResult] = useState("");
+export default class ClassRockScissorsPaper extends Component {
+  constructor() {
+    super();
+    this.state = {
+      userSelect: null,
+      computerSelect: null,
+      result: "",
+    };
+  }
 
-  const play = (userChoice) => {
-    setUserSelect(choice[userChoice]);
-    let computerChoice = randomChoice();
-    setComputerSelect(computerChoice);
-
-    setResult(judgement(choice[userChoice], computerChoice));
+  play = (userChoice) => {
+    let computerChoice = this.randomChoice();
+    this.setState({
+      userSelect: choice[userChoice],
+      computerSelect: computerChoice,
+      result: this.judgement(choice[userChoice], computerChoice),
+    });
   };
+  randomChoice = () => {
+    let itemArray = Object.keys(choice); //객체에 키값만 뽑아서 어레이로 만들어주는 함수다
+    let randomItem = Math.floor(Math.random() * itemArray.length);
+    let final = itemArray[randomItem];
+    return choice[final];
+  };
+  judgement = (user, computer) => {
+    // user == computer tie
+    // user == rock, computer == "scissors" user 이긴거지
+    // user == "rock" computer == paper   user 진거지
+    // user == scissors computer paper    user 이긴거지
+    // user == scissors computer rock     user 진거지
+    // user == paper computer rock   user 이긴거지
+    // user paper computer scissors user 진거지
 
-  const judgement = (user, computer) => {
-    // console.log("user:", user, "computer:", computer);
-    // user = computer tie
-    // user == rock, computer == scissors user win
-    // user == rock, computer == paper user lose
-    // user == scissors, computer == paper user win
-    // user == scissors, computer == rock user lose
-    // user == paper, computer == rock user win
-    // user == paper, comprter == scissors user lose
-
-    if (user.name === computer.name) {
+    if (user.name == computer.name) {
       return "tie";
     } else if (user.name == "Rock")
       return computer.name == "Scissors" ? "win" : "lose";
@@ -57,28 +60,28 @@ function RockScissorsPaper() {
       return computer.name == "Rock" ? "win" : "lose";
   };
 
-  const randomChoice = () => {
-    let itemArray = Object.keys(choice); // Object.keys : 객체에 키값만 뽑이서 array로 만들어주는 함수이다. choice의 키값..
-    // console.log("itemArray:", itemArray);
-    let randomItem = Math.floor(Math.random() * itemArray.length);
-    let final = itemArray[randomItem];
-    return choice[final];
-  };
-
-  return (
-    <div>
-      <div className="main">
-        <h1>함수형</h1>
-        <Box title="You" item={userSelect} result={result} />
-        <Box title="Computer" item={computerSelect} result={result} />
+  render() {
+    return (
+      <div>
+        <div className="main">
+          <h1>클래스형</h1>
+          <BoxClass
+            title="You"
+            item={this.state.userSelect}
+            result={this.state.result}
+          />
+          <BoxClass
+            title="Computer"
+            item={this.state.computerSelect}
+            result={this.state.result}
+          />
+        </div>
+        <div className="main">
+          <button onClick={() => this.play("scissors")}>가위</button>
+          <button onClick={() => this.play("rock")}>바위</button>
+          <button onClick={() => this.play("paper")}>보</button>
+        </div>
       </div>
-      <div className="main">
-        <button onClick={() => play("scissors")}>가위</button>
-        <button onClick={() => play("rock")}>바위</button>
-        <button onClick={() => play("paper")}>보</button>
-      </div>
-    </div>
-  );
+    );
+  }
 }
-
-export default RockScissorsPaper;
